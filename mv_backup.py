@@ -60,23 +60,16 @@ def run_exports():
     log.debug( 'output_export_a, ```%s```' % pprint.pformat(output_export_a.replace("\t", " -- ").split("\n")) )
     time.sleep( 1 )
 
-    output_export_a = os.popen( collection_a_command_str ).read()
-    log.debug( 'output_export_a, ```%s```' % pprint.pformat(output_export_a.replace("\t", " -- ").split("\n")) )
+    output_export_b = os.popen( collection_b_command_str ).read()
+    log.debug( 'output_export_b, ```%s```' % pprint.pformat(output_export_b.replace("\t", " -- ").split("\n")) )
     time.sleep( 1 )
 
-    output_export_a = os.popen( collection_a_command_str ).read()
-    log.debug( 'output_export_a, ```%s```' % pprint.pformat(output_export_a.replace("\t", " -- ").split("\n")) )
+    output_export_c = os.popen( collection_c_command_str ).read()
+    log.debug( 'output_export_c, ```%s```' % pprint.pformat(output_export_c.replace("\t", " -- ").split("\n")) )
     time.sleep( 1 )
 
     return
 
-# output = process.stdout
-# log.debug( f'output, ```{output}```' )
-# log.debug( f'type(output), `{type(output)}`' )
-
-# lines = output.split('\n')
-# log.debug( f'lines, ```{pprint.pformat(lines)}```' )
-# log.debug( f'type(lines), `{type(lines)}`' )
 
 
 if __name__ == '__main__':
