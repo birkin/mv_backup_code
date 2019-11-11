@@ -16,7 +16,7 @@ logging.config.dictConfig({
         'logfile': {
             'level':'DEBUG',
             'class':'logging.FileHandler',  # note: configure server to use system's log-rotate to avoid permissions issues
-            'filename': os.environ['MV__LOG_PATH'],
+            'filename': os.environ['MV_BCKP__LOG_PATH'],
             # 'class': 'logging.StreamHandler',
             'formatter': 'default' }, },
     'loggers': {
@@ -27,13 +27,13 @@ log.info( 'logging setup complete' )
 
 
 ## load envars
-container_name = os.environ['MV__MONGO_CONTAINER_NAME']
-db_name = os.environ['MV__MONGO_DB_NAME']
-collection_a_name = os.environ['MV__MONGO_COLLECTION_A_NAME']
-collection_b_name = os.environ['MV__MONGO_COLLECTION_B_NAME']
-collection_c_name = os.environ['MV__MONGO_COLLECTION_C_NAME']
-output_dir = os.environ['MV__MONGO_CONTAINER_OUT_DIR']
-output_filename_segment = os.environ['MV__MONGO_CONTAINER_OUT_FILENAME_SEGMENT']
+container_name = os.environ['MV_BCKP__MONGO_CONTAINER_NAME']
+db_name = os.environ['MV_BCKP__MONGO_DB_NAME']
+collection_a_name = os.environ['MV_BCKP__MONGO_COLLECTION_A_NAME']
+collection_b_name = os.environ['MV_BCKP__MONGO_COLLECTION_B_NAME']
+collection_c_name = os.environ['MV_BCKP__MONGO_COLLECTION_C_NAME']
+output_dir = os.environ['MV_BCKP__MONGO_CONTAINER_OUT_DIR']
+output_filename_segment = os.environ['MV_BCKP__MONGO_CONTAINER_OUT_FILENAME_SEGMENT']
 
 
 ## get to work!
