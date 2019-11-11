@@ -64,27 +64,49 @@ def run_exports():
 
     output_export_a = os.popen( collection_a_export_command_str ).read()
     log.debug( 'output_export_a, ```%s```' % pprint.pformat(output_export_a.replace("\t", " -- ").split("\n")) )
-    time.sleep( 1 )
+    time.sleep( .5 )
 
     output_export_b = os.popen( collection_b_export_command_str ).read()
     log.debug( 'output_export_b, ```%s```' % pprint.pformat(output_export_b.replace("\t", " -- ").split("\n")) )
-    time.sleep( 1 )
+    time.sleep( .5 )
 
     output_export_c = os.popen( collection_c_export_command_str ).read()
     log.debug( 'output_export_c, ```%s```' % pprint.pformat(output_export_c.replace("\t", " -- ").split("\n")) )
-    time.sleep( 1 )
+    time.sleep( .5 )
 
     ## create copy command strings
+
     source_a_filepath = f'{container_output_dir}/{collection_a_output_filename}'
     destination_a_filepath = f'{server_output_dir}/{collection_a_output_filename}'
     collection_a_copy_command_str = f'''docker cp {container_name}:{source_a_filepath} {destination_a_filepath}'''
     log.debug( f'collection_a_copy_command_str, ```{collection_a_copy_command_str}```' )
+    time.sleep( .5 )
+
+    source_b_filepath = f'{container_output_dir}/{collection_b_output_filename}'
+    destination_b_filepath = f'{server_output_dir}/{collection_b_output_filename}'
+    collection_b_copy_command_str = f'''docker cp {container_name}:{source_b_filepath} {destination_b_filepath}'''
+    log.debug( f'collection_b_copy_command_str, ```{collection_b_copy_command_str}```' )
+    time.sleep( .5 )
+
+    source_c_filepath = f'{container_output_dir}/{collection_c_output_filename}'
+    destination_c_filepath = f'{server_output_dir}/{collection_c_output_filename}'
+    collection_c_copy_command_str = f'''docker cp {container_name}:{source_c_filepath} {destination_c_filepath}'''
+    log.debug( f'collection_c_copy_command_str, ```{collection_c_copy_command_str}```' )
+    time.sleep( .5 )
 
     ## copy to server output directory
 
     output_copy_a = os.popen( collection_a_copy_command_str ).read()
     log.debug( 'output_copy_a, ```%s```' % pprint.pformat(output_copy_a.replace("\t", " -- ").split("\n")) )
-    time.sleep( 1 )
+    time.sleep( .5 )
+
+    output_copy_b = os.popen( collection_b_copy_command_str ).read()
+    log.debug( 'output_copy_b, ```%s```' % pprint.pformat(output_copy_b.replace("\t", " -- ").split("\n")) )
+    time.sleep( .5 )
+
+    output_copy_c = os.popen( collection_c_copy_command_str ).read()
+    log.debug( 'output_copy_c, ```%s```' % pprint.pformat(output_copy_c.replace("\t", " -- ").split("\n")) )
+    time.sleep( .5 )
 
     return
 
