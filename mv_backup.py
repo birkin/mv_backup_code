@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+
 """
 Manages mongodump backups, for possible restore -- and mongoexport exports, for human use.
 
