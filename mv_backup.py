@@ -48,7 +48,8 @@ today_str = str( datetime.date.today() )
 
 def run_exports():
     """ Creates human-readable exports of the data.
-        Called by docker-server cron-script """
+        Each of the three collections is saved to a container-directory, and then copied to a server-directory.
+        Called by docker-server cron-script every Friday. """
 
     ## create export command strings
 
@@ -87,19 +88,16 @@ def run_exports():
     destination_a_filepath = '%s/%s' % ( server_output_dir, collection_a_output_filename )
     collection_a_copy_command_str = '''docker cp %s:%s %s''' % (container_name, source_a_filepath, destination_a_filepath )
     log.debug( 'collection_a_copy_command_str, ```%s```' % collection_a_copy_command_str )
-    time.sleep( .5 )
 
     source_b_filepath = '%s/%s' % (container_output_dir, collection_b_output_filename)
     destination_b_filepath = '%s/%s' % ( server_output_dir, collection_b_output_filename )
     collection_b_copy_command_str = '''docker cp %s:%s %s''' % (container_name, source_b_filepath, destination_b_filepath )
     log.debug( 'collection_b_copy_command_str, ```%s```' % collection_b_copy_command_str )
-    time.sleep( .5 )
 
     source_c_filepath = '%s/%s' % (container_output_dir, collection_c_output_filename)
     destination_c_filepath = '%s/%s' % ( server_output_dir, collection_c_output_filename )
     collection_c_copy_command_str = '''docker cp %s:%s %s''' % (container_name, source_c_filepath, destination_c_filepath )
     log.debug( 'collection_c_copy_command_str, ```%s```' % collection_c_copy_command_str )
-    time.sleep( .5 )
 
     ## copy to server output directory
 
@@ -117,13 +115,46 @@ def run_exports():
 
     return
 
+    ## end of run_exports()
+
+
+def run_backups():
+    """ Creates bson backup of the data.
+        Output is saved to a container-directory, and then copied to a server-directory.
+        Called by docker-server cron-script every Friday. """
+
+    ## create backup command
+    output_filename = '%s_mv_mongo_backup' % today_str
+    container_output_filepath = '%s/%s' % ( container_output_dir, output_filename )
+    dump_command_str = 'docker exec -it %s mongodump --out %s' % (
+        container_name, container_output_filepath )
+    log.debug( 'dump_command_str, ```%s```' % dump_command_str )
+
+    ## run backup command
+    output_dump = os.popen( dump_command_str ).read()
+    log.debug( 'output_dump, ```%s```' % pprint.pformat(output_dump.replace('\t', ' -- ').split('\n')) )
+    time.sleep( .5 )
+
+    ## create copy command
+    source_filepath = container_output_filepath
+    destination_filepath = '%s/%s' % ( server_output_dir, output_filename )
+    copy_command_str = '''docker cp %s:%s %s''' % (container_name, source_filepath, destination_filepath )
+    log.debug( 'copy_command_str, ```%s```' % copy_command_str )
+
+    ## run copy command
+    output_copy = os.popen( copy_command_str ).read()
+    log.debug( 'output_copy, ```%s```' % pprint.pformat(output_copy.replace('\t', ' -- ').split('\n')) )
+    time.sleep( .5 )
+
+    return
+
 
 if __name__ == '__main__':
     arg = sys.argv[1] if len(sys.argv) == 2 else None
     log.debug( 'argument, `%s`' % arg )
-    if arg == 'run_exports':
+    if arg == 'run_export':
         run_exports()
-    elif arg == 'run_backups':
+    elif arg == 'run_backup':
         run_backups()
     else:
         raise Exception( 'bad argument' )
