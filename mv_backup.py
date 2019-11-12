@@ -32,7 +32,7 @@ db_name = os.environ['MV_BCKP__MONGO_DB_NAME']
 collection_a_name = os.environ['MV_BCKP__MONGO_COLLECTION_A_NAME']
 collection_b_name = os.environ['MV_BCKP__MONGO_COLLECTION_B_NAME']
 collection_c_name = os.environ['MV_BCKP__MONGO_COLLECTION_C_NAME']
-export_filename_segment = os.environ['MV_BCKP__MONGO_EXPORT_FILENAME_SEGMENT']
+# export_filename_segment = os.environ['MV_BCKP__MONGO_EXPORT_FILENAME_SEGMENT']
 # backup_filename_segment = os.environ['MV_BCKP__MONGO_BACKUP_FILENAME_SEGMENT']
 container_output_dir = os.environ['MV_BCKP__MONGO_CONTAINER_OUT_DIR']
 server_output_dir = os.environ['MV_BCKP__SERVER_CP_DESTINATION_DIR']
@@ -48,17 +48,18 @@ def run_exports():
 
     ## create export command strings
 
-    collection_a_output_filename = f'{today_str}_{export_filename_segment}_{collection_a_name}.json'
-    collection_a_export_command_str = f'''docker exec -it {container_name} mongoexport --db={db_name} --collection={collection_a_name} --out={container_output_dir}/{collection_a_output_filename} --jsonArray --pretty --assertExists'''
-    log.debug( f'collection_a_export_command_str, ```{collection_a_export_command_str}```' )
+    collection_a_output_filename = '%s_mv_mongo_EXPORT_%s.json' % ( today_str, collection_a_name )
+    collection_a_export_command_str = '''docker exec -it %s mongoexport --db=%s --collection=%s --out=%s/%s --jsonArray --pretty --assertExists''' % (
+        container_name,  db_name, collection_a_name, container_output_dir, collection_a_output_filename )
+    log.debug( 'collection_a_export_command_str, ```%s```' % collection_a_export_command_str )
 
-    collection_b_output_filename = f'{today_str}_{export_filename_segment}_{collection_b_name}.json'
-    collection_b_export_command_str = f'''docker exec -it {container_name} mongoexport --db={db_name} --collection={collection_b_name} --out={container_output_dir}/{collection_b_output_filename} --jsonArray --pretty --assertExists'''
-    log.debug( f'collection_b_export_command_str, ```{collection_b_export_command_str}```' )
+    # collection_b_output_filename = f'{today_str}_{export_filename_segment}_{collection_b_name}.json'
+    # collection_b_export_command_str = f'''docker exec -it {container_name} mongoexport --db={db_name} --collection={collection_b_name} --out={container_output_dir}/{collection_b_output_filename} --jsonArray --pretty --assertExists'''
+    # log.debug( f'collection_b_export_command_str, ```{collection_b_export_command_str}```' )
 
-    collection_c_output_filename = f'{today_str}_{export_filename_segment}_{collection_c_name}.json'
-    collection_c_export_command_str = f'''docker exec -it {container_name} mongoexport --db={db_name} --collection={collection_c_name} --out={container_output_dir}/{collection_c_output_filename} --jsonArray --pretty --assertExists'''
-    log.debug( f'collection_c_export_command_str, ```{collection_c_export_command_str}```' )
+    # collection_c_output_filename = f'{today_str}_{export_filename_segment}_{collection_c_name}.json'
+    # collection_c_export_command_str = f'''docker exec -it {container_name} mongoexport --db={db_name} --collection={collection_c_name} --out={container_output_dir}/{collection_c_output_filename} --jsonArray --pretty --assertExists'''
+    # log.debug( f'collection_c_export_command_str, ```{collection_c_export_command_str}```' )
 
     ## export to container output directory
 
@@ -66,33 +67,33 @@ def run_exports():
     log.debug( 'output_export_a, ```%s```' % pprint.pformat(output_export_a.replace("\t", " -- ").split("\n")) )
     time.sleep( .5 )
 
-    output_export_b = os.popen( collection_b_export_command_str ).read()
-    log.debug( 'output_export_b, ```%s```' % pprint.pformat(output_export_b.replace("\t", " -- ").split("\n")) )
-    time.sleep( .5 )
+    # output_export_b = os.popen( collection_b_export_command_str ).read()
+    # log.debug( 'output_export_b, ```%s```' % pprint.pformat(output_export_b.replace("\t", " -- ").split("\n")) )
+    # time.sleep( .5 )
 
-    output_export_c = os.popen( collection_c_export_command_str ).read()
-    log.debug( 'output_export_c, ```%s```' % pprint.pformat(output_export_c.replace("\t", " -- ").split("\n")) )
-    time.sleep( .5 )
+    # output_export_c = os.popen( collection_c_export_command_str ).read()
+    # log.debug( 'output_export_c, ```%s```' % pprint.pformat(output_export_c.replace("\t", " -- ").split("\n")) )
+    # time.sleep( .5 )
 
     ## create copy command strings
 
-    source_a_filepath = f'{container_output_dir}/{collection_a_output_filename}'
-    destination_a_filepath = f'{server_output_dir}/{collection_a_output_filename}'
-    collection_a_copy_command_str = f'''docker cp {container_name}:{source_a_filepath} {destination_a_filepath}'''
-    log.debug( f'collection_a_copy_command_str, ```{collection_a_copy_command_str}```' )
+    source_a_filepath = '%s/%s' % (container_output_dir, collection_a_output_filename)
+    destination_a_filepath = '%s/%s' % ( server_output_dir, collection_a_output_filename )
+    collection_a_copy_command_str = '''docker cp %s:%s %s''' % (container_name, source_a_filepath, destination_a_filepath )
+    log.debug( 'collection_a_copy_command_str, ```%s```' % collection_a_copy_command_str )
     time.sleep( .5 )
 
-    source_b_filepath = f'{container_output_dir}/{collection_b_output_filename}'
-    destination_b_filepath = f'{server_output_dir}/{collection_b_output_filename}'
-    collection_b_copy_command_str = f'''docker cp {container_name}:{source_b_filepath} {destination_b_filepath}'''
-    log.debug( f'collection_b_copy_command_str, ```{collection_b_copy_command_str}```' )
-    time.sleep( .5 )
+    # source_b_filepath = f'{container_output_dir}/{collection_b_output_filename}'
+    # destination_b_filepath = f'{server_output_dir}/{collection_b_output_filename}'
+    # collection_b_copy_command_str = f'''docker cp {container_name}:{source_b_filepath} {destination_b_filepath}'''
+    # log.debug( f'collection_b_copy_command_str, ```{collection_b_copy_command_str}```' )
+    # time.sleep( .5 )
 
-    source_c_filepath = f'{container_output_dir}/{collection_c_output_filename}'
-    destination_c_filepath = f'{server_output_dir}/{collection_c_output_filename}'
-    collection_c_copy_command_str = f'''docker cp {container_name}:{source_c_filepath} {destination_c_filepath}'''
-    log.debug( f'collection_c_copy_command_str, ```{collection_c_copy_command_str}```' )
-    time.sleep( .5 )
+    # source_c_filepath = f'{container_output_dir}/{collection_c_output_filename}'
+    # destination_c_filepath = f'{server_output_dir}/{collection_c_output_filename}'
+    # collection_c_copy_command_str = f'''docker cp {container_name}:{source_c_filepath} {destination_c_filepath}'''
+    # log.debug( f'collection_c_copy_command_str, ```{collection_c_copy_command_str}```' )
+    # time.sleep( .5 )
 
     ## copy to server output directory
 
@@ -100,13 +101,13 @@ def run_exports():
     log.debug( 'output_copy_a, ```%s```' % pprint.pformat(output_copy_a.replace("\t", " -- ").split("\n")) )
     time.sleep( .5 )
 
-    output_copy_b = os.popen( collection_b_copy_command_str ).read()
-    log.debug( 'output_copy_b, ```%s```' % pprint.pformat(output_copy_b.replace("\t", " -- ").split("\n")) )
-    time.sleep( .5 )
+    # output_copy_b = os.popen( collection_b_copy_command_str ).read()
+    # log.debug( 'output_copy_b, ```%s```' % pprint.pformat(output_copy_b.replace("\t", " -- ").split("\n")) )
+    # time.sleep( .5 )
 
-    output_copy_c = os.popen( collection_c_copy_command_str ).read()
-    log.debug( 'output_copy_c, ```%s```' % pprint.pformat(output_copy_c.replace("\t", " -- ").split("\n")) )
-    time.sleep( .5 )
+    # output_copy_c = os.popen( collection_c_copy_command_str ).read()
+    # log.debug( 'output_copy_c, ```%s```' % pprint.pformat(output_copy_c.replace("\t", " -- ").split("\n")) )
+    # time.sleep( .5 )
 
     return
 
@@ -114,7 +115,7 @@ def run_exports():
 
 if __name__ == '__main__':
     arg = sys.argv[1] if len(sys.argv) == 2 else None
-    log.debug( f'argument, `{arg}`' )
+    log.debug( 'argument, `%s`' % arg )
     if arg == 'run_exports':
         run_exports()
     elif arg == 'run_backups':
