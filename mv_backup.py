@@ -126,8 +126,13 @@ def run_backups():
     ## create backup command
     output_filename = '%s_mv_mongo_backup' % today_str
     container_output_filepath = '%s/%s' % ( container_output_dir, output_filename )
-    dump_command_str = 'docker exec -it %s mongodump --out %s' % (
+
+    # dump_command_str = 'docker exec -it %s mongodump --out %s' % (
+    #     container_name, container_output_filepath )
+
+    dump_command_str = 'docker exec -i %s mongodump --out %s' % (
         container_name, container_output_filepath )
+
     log.debug( 'dump_command_str, ```%s```' % dump_command_str )
 
     ## run backup command
