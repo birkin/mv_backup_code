@@ -52,19 +52,20 @@ def run_exports():
         Called by docker-server cron-script every Friday. """
 
     ## create export command strings
+    ## (note, the `docker exec -it ...` normally used interactively won't work with cron, thus the `t` is removed here.)
 
     collection_a_output_filename = '%s_mv_mongo_EXPORT_%s.json' % ( today_str, collection_a_name )
-    collection_a_export_command_str = '''docker exec -it %s mongoexport --db=%s --collection=%s --out=%s/%s --jsonArray --pretty --assertExists''' % (
+    collection_a_export_command_str = '''docker exec -i %s mongoexport --db=%s --collection=%s --out=%s/%s --jsonArray --pretty --assertExists''' % (
         container_name,  db_name, collection_a_name, container_output_dir, collection_a_output_filename )
     log.debug( 'collection_a_export_command_str, ```%s```' % collection_a_export_command_str )
 
     collection_b_output_filename = '%s_mv_mongo_EXPORT_%s.json' % ( today_str, collection_b_name )
-    collection_b_export_command_str = '''docker exec -it %s mongoexport --db=%s --collection=%s --out=%s/%s --jsonArray --pretty --assertExists''' % (
+    collection_b_export_command_str = '''docker exec -i %s mongoexport --db=%s --collection=%s --out=%s/%s --jsonArray --pretty --assertExists''' % (
         container_name,  db_name, collection_b_name, container_output_dir, collection_b_output_filename )
     log.debug( 'collection_b_export_command_str, ```%s```' % collection_b_export_command_str )
 
     collection_c_output_filename = '%s_mv_mongo_EXPORT_%s.json' % ( today_str, collection_c_name )
-    collection_c_export_command_str = '''docker exec -it %s mongoexport --db=%s --collection=%s --out=%s/%s --jsonArray --pretty --assertExists''' % (
+    collection_c_export_command_str = '''docker exec -i %s mongoexport --db=%s --collection=%s --out=%s/%s --jsonArray --pretty --assertExists''' % (
         container_name,  db_name, collection_c_name, container_output_dir, collection_c_output_filename )
     log.debug( 'collection_c_export_command_str, ```%s```' % collection_c_export_command_str )
 
@@ -126,13 +127,8 @@ def run_backups():
     ## create backup command
     output_filename = '%s_mv_mongo_backup' % today_str
     container_output_filepath = '%s/%s' % ( container_output_dir, output_filename )
-
-    # dump_command_str = 'docker exec -it %s mongodump --out %s' % (
-    #     container_name, container_output_filepath )
-
     dump_command_str = 'docker exec -i %s mongodump --out %s' % (
-        container_name, container_output_filepath )
-
+        container_name, container_output_filepath )  # note, the `docker exec -it ...` normally used interactively won't work with cron, thus the `t` is removed here.
     log.debug( 'dump_command_str, ```%s```' % dump_command_str )
 
     ## run backup command
